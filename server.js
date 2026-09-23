@@ -8,6 +8,11 @@ app.use(cors());
 app.use(express.json({ limit: '50mb' }));
 app.use(express.static(path.join(__dirname)));
 
+// Serve index.html for root route
+app.get('/', (req, res) => {
+  res.sendFile(path.join(__dirname, 'index.html'));
+});
+
 // POST /api/test-smtp  — verify credentials without sending
 app.post('/api/test-smtp', async (req, res) => {
   const { smtp } = req.body;
@@ -75,7 +80,14 @@ app.post('/api/send-email', async (req, res) => {
 });
 
 const PORT = process.env.PORT || 3001;
-app.listen(PORT, () => {
-  console.log(`Certificate mailer running → http://localhost:${PORT}`);
-  console.log('Open http://localhost:' + PORT + '/index.html in your browser.');
-});
+
+// Only listen when running locally (not on Vercel)
+if (process.env.NODE_ENV !== 'production') {
+  app.listen(PORT, () => {
+    console.log(`Certificate mailer running → http://localhost:${PORT}`);
+    console.log('Open http://localhost:' + PORT + '/index.html in your browser.');
+  });
+}
+
+// Export for Vercel serverless
+module.exports = app;

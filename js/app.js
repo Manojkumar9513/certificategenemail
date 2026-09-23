@@ -151,7 +151,11 @@
   const canvasContainer   = document.getElementById('canvasContainer');
   const canvasHint        = document.getElementById('canvasHint');
 
-  const API_BASE = 'http://localhost:3001';
+  // Use relative path in production/Vercel; use port 3001 if served from a dev server like Live Server (port 5500)
+  const API_BASE = (window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1') && window.location.port !== '3001' && window.location.port !== ''
+    ? 'http://localhost:3001'
+    : '';
+
 
   const emailSubject      = document.getElementById('emailSubject');
   const emailBody         = document.getElementById('emailBody');
